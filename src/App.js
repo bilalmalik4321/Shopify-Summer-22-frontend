@@ -8,11 +8,26 @@ import {
 } from "react-router-dom";
 import { UpdateItem } from "./updateItem";
 import { AddItem } from "./addItem";
+import { CSVLink } from "react-csv";
 
 function App() {
 
   const [inventory, setInventory] = useState([]);
   const [id, setID] = useState(-1);
+
+  const headers = [
+    {label: "Item Name", key: "name"},
+    {label: "Quantity", key: "quantity"},
+    {label: "Description", key: "description"},
+    {label: "Item Price", key: "itemPrice"},
+    {label: "Discount Price", key: "discountPrice"}
+  ];
+
+  const csvReport = {
+    filename: 'inventory.csv',
+    headers: headers,
+    data: inventory
+  }
 
   const getInventory = () => {
     fetch('http://localhost:5000/inventory')
@@ -49,8 +64,9 @@ function App() {
               <div>
                 <h1>Inventory Items</h1>
                 <Link to="/add" style={{width: 12}}>
-                  <h6>Add Item</h6>
+                  <h4>Add Inventory Item</h4>
                 </Link>
+                <CSVLink {...csvReport}>Export to CSV</CSVLink>
               </div>
               {inventory.map((inventoryItem, index) => 
                 <div key={index}>
