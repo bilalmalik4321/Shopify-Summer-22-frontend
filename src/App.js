@@ -19,8 +19,7 @@ function App() {
     {label: "Item Name", key: "name"},
     {label: "Quantity", key: "quantity"},
     {label: "Description", key: "description"},
-    {label: "Item Price", key: "itemPrice"},
-    {label: "Discount Price", key: "discountPrice"}
+    {label: "Item Price", key: "itemPrice"}
   ];
 
   const csvReport = {
@@ -86,7 +85,6 @@ function App() {
                   <p>Quantity: {inventoryItem["quantity"]}</p>
                   <p>Description: {inventoryItem["description"]}</p>
                   <p>Price: ${inventoryItem["itemPrice"]}</p>
-                  <p>Discount: ${inventoryItem["discountPrice"]}</p>
                 </div>
               )}
             </>

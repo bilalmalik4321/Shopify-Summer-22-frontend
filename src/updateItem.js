@@ -4,6 +4,8 @@ import {
     useNavigate
 } from "react-router-dom";
 
+//TODO: add error handeling, cannot change to nothing
+
 export const UpdateItem = (props) => {
     const [item, setItem] = useState(props.item);
 
@@ -12,9 +14,16 @@ export const UpdateItem = (props) => {
         setItem({...item, [name]: value });
     }
 
+    const [error, setError] = useState(false);
+
     const navigate = useNavigate();
 
     const updateItem = () =>{
+
+        if(item.name === '' || item.description === '' || item.itemPrice === '' || item.quantity === null ){
+            setError(true);
+            return;
+        }
         
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -23,8 +32,7 @@ export const UpdateItem = (props) => {
             "name": item.name,
             "quantity": item.quantity,
             "description": item.description,
-            "itemPrice": item.itemPrice,
-            "discountPrice": item.discountPrice
+            "itemPrice": item.itemPrice
         });
 
         let requestOptions = {
@@ -36,10 +44,12 @@ export const UpdateItem = (props) => {
 
         fetch("http://localhost:5000/inventory/"+item._id, requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => {
+            props.getInventory();
+            console.log(result);
+        })
         .catch(error => console.log('error', error));
         
-        props.getInventory();
         navigate('/');
 
 
@@ -66,12 +76,7 @@ export const UpdateItem = (props) => {
                 <br/>
                 <label>
                     Item Price:
-                    <input type="text" name="itemPrice" placeholder={item.itemPrice} onChange={handleInput}/>
-                </label>
-                <br/>
-                <label>
-                    Item Discount Price:
-                    <input type="text" name="discountPrice" placeholder={item.discountPrice} onChange={handleInput}/>
+                    <input type="number" step="any" min="0" name="itemPrice" placeholder={item.itemPrice} onChange={handleInput}/>
                 </label>
                 <br/>
                 <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between" }}>
@@ -84,6 +89,9 @@ export const UpdateItem = (props) => {
                         Submit
                     </button>
                 </div>
+                {error && <div style={{ color: "#ff1a1a", fontSize: 24, fontWeight: "bold" }}>
+                    Please fill out all values before submitting
+                </div>}
             </div>    
         </>
     );

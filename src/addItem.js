@@ -5,15 +5,19 @@ import {
 } from "react-router-dom";
 
 
+//TODO: add error handeling, create nothing
+//TODO: item price needs to be a number
+
 export const AddItem = (props) => {
 
     const [item, setItem] = useState({
         name:'',
         quantity: null,
         description: '',
-        itemPrice: '',
-        discountPrice: ''
+        itemPrice: ''
     });
+
+    const [error, setError] = useState(false);
 
     const handleInput = (e) => {
         let { name, value } = e.target;
@@ -23,6 +27,12 @@ export const AddItem = (props) => {
     const navigate = useNavigate();
 
     const addItem = () =>{
+
+        if(item.name === '' || item.description === '' || item.itemPrice === '' || item.quantity === null ){
+            setError(true);
+            return;
+        }
+
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
@@ -30,8 +40,7 @@ export const AddItem = (props) => {
             "name": item.name,
             "quantity": item.quantity,
             "description": item.description,
-            "itemPrice": item.itemPrice,
-            "discountPrice": item.discountPrice
+            "itemPrice": item.itemPrice
         });
 
         let requestOptions = {
@@ -43,12 +52,12 @@ export const AddItem = (props) => {
 
         fetch("http://localhost:5000/inventory", requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => {
+            props.getInventory();
+            console.log(result);
+        })
         .catch(error => console.log('error', error));
 
-        // const routeHome = useCallback(() => navigate('/sample', {replace: true}), [navigate]);
-        // routeHome();
-        props.getInventory();
         navigate('/');
 
 
@@ -66,7 +75,7 @@ export const AddItem = (props) => {
                 <br/>
                 <label>
                     Item Quantity:
-                    <input type="number" name="quantity" onChange={handleInput} />
+                    <input type="number" name="quantity" min="0" onChange={handleInput} />
                 </label>
                 <br/>
                 <label>
@@ -76,12 +85,7 @@ export const AddItem = (props) => {
                 <br/>
                 <label>
                     Item Price:
-                    <input type="text" name="itemPrice" onChange={handleInput}/>
-                </label>
-                <br/>
-                <label>
-                    Item Discount Price:
-                    <input type="text" name="discountPrice" onChange={handleInput}/>
+                    <input type="number" step="any" min="0" name="itemPrice" onChange={handleInput}/>
                 </label>
                 <br/>
                 <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between" }}>
@@ -94,6 +98,9 @@ export const AddItem = (props) => {
                         Submit
                     </button>
                 </div>
+                {error && <div style={{ color: "#ff1a1a", fontSize: 24, fontWeight: "bold" }}>
+                    Please fill out all values before submitting
+                </div>}
             </div>    
         </>
     );
