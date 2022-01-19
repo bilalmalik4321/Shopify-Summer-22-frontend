@@ -18,7 +18,6 @@ function App() {
     fetch('http://localhost:5000/inventory')
     .then(result => {return result.json()})
     .then(data => {
-      console.log(data);
       setInventory(data);
     });
   }
@@ -27,30 +26,18 @@ function App() {
     fetch("http://localhost:5000/inventory/"+id, 
     {  method: "DELETE",  headers: {    "Content-type": "application/json"  }}) 
     .then(response => {    
-      console.log(response.status);     
-      return response.json();  
+      console.log(response.status);    
+      getInventory();  
+      return response.json(); 
     })  
     .then(data => console.log(data));
-    getInventory();
-  }
-
-  const updateItem = (id) => {
-    console.log(id);
-    fetch("http://localhost:5000/inventory/"+id, { 
-    method: "PATCH",
-    headers: {"Content-type": "application/json"},
-    body: JSON.stringify(
-        {    title: "Corrected post"  }
-        )}) 
-    .then(response => {    console.log(response.status);     return response.json();  })  .then(data => console.log(data));
-    getInventory();
   }
 
   useEffect(()=>{
-    getInventory();
-  },[])
 
-  console.log(inventory);
+    getInventory();
+
+  },[])
 
   return (
     <div className="App">
@@ -61,8 +48,8 @@ function App() {
               <>
               <div>
                 <h1>Inventory Items</h1>
-                <Link to="/add">
-                <h6>Add Item</h6>
+                <Link to="/add" style={{width: 12}}>
+                  <h6>Add Item</h6>
                 </Link>
               </div>
               {inventory.map((inventoryItem, index) => 
@@ -89,9 +76,9 @@ function App() {
             </>
             }>
             </Route>
-            <Route path="/update" element={<UpdateItem item={inventory[id]}/>}>
+            <Route path="/update" element={<UpdateItem item={inventory[id]} getInventory={getInventory}/>}>
             </Route>
-            <Route path="/add" element={<AddItem/>}>
+            <Route path="/add" element={<AddItem  getInventory={getInventory}/>}>
             </Route>
           </Routes>
         </Router>
