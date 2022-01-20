@@ -4,8 +4,6 @@ import {
     useNavigate
 } from "react-router-dom";
 
-//TODO: add error handeling, cannot change to nothing
-
 export const UpdateItem = (props) => {
     const [item, setItem] = useState(props.item);
 

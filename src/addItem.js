@@ -4,10 +4,6 @@ import {
     useNavigate
 } from "react-router-dom";
 
-
-//TODO: add error handeling, create nothing
-//TODO: item price needs to be a number
-
 export const AddItem = (props) => {
 
     const [item, setItem] = useState({
